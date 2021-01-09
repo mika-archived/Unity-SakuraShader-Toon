@@ -10,14 +10,18 @@
 // ref: https://docs.unity3d.com/ja/2018.4/Manual/SL-SamplerStates.html
 
 // Main Shading
-uniform Texture2D    _MainTex;
-uniform SamplerState sampler_MainTex;
+UNITY_DECLARE_TEX2D(_MainTex);
 uniform float4       _MainTex_ST;
 uniform fixed4       _Color;
 uniform float        _Alpha;
+UNITY_DECLARE_TEX2D_NOSAMPLER(_AlphaMask);
+uniform float4       _AlphaMask_ST;
 uniform float        _Cutout;
+UNITY_DECLARE_TEX2D_NOSAMPLER(_CutoutMask);
+uniform float4       _CutoutMask_ST;
 uniform int          _UseVertexColor;
-uniform Texture2D    _BumpMap;
+uniform int          _VertexColorBlendMode;
+UNITY_DECLARE_TEX2D_NOSAMPLER(_BumpMap);
 uniform float4       _BumpMap_ST;
 
 // Toon Shading
@@ -30,22 +34,22 @@ uniform float        _Unlighting;
 
 // Emission
 uniform int          _EnableEmission;
-uniform Texture2D    _EmissionMask;
-uniform float4       _EmissionMask_ST;
 uniform float4       _EmissionColor;
+UNITY_DECLARE_TEX2D_NOSAMPLER(_EmissionMask);
+uniform float4       _EmissionMask_ST;
 
 // Parallax Emission
 uniform int          _EnableParallaxEmission;
 uniform sampler2D    _ParallaxEmissionTex;
 uniform float4       _ParallaxEmissionTex_ST;
-uniform Texture2D    _ParallaxEmissionMask;
+UNITY_DECLARE_TEX2D_NOSAMPLER(_ParallaxEmissionMask);
 uniform float4       _ParallaxEmissionMask_ST;
 
 // Rim Lighting
 uniform int          _EnableRimLighting;
-uniform Texture2D    _RimLightingMask;
-uniform float4       _RimLightingMask_ST;
 uniform float4       _RimLightingColor;
+UNITY_DECLARE_TEX2D_NOSAMPLER(_RimLightingMask);
+uniform float4       _RimLightingMask_ST;
 
 // Reflection
 uniform int          _EnableReflection;
@@ -54,8 +58,11 @@ uniform int          _EnableReflection;
 uniform int          _EnableOutline;
 uniform float        _OutlineWidth;
 uniform float4       _OutlineColor;
-uniform Texture2D    _OutlineMask;
+uniform sampler2D    _OutlineTex;
+uniform float4       _OutlineTex_ST;
+UNITY_DECLARE_TEX2D_NOSAMPLER(_OutlineMask);
 uniform float4       _OutlineMask_ST;
+uniform int          _UseMainTexColorInOutline;
 
 // Voxelization
 uniform int          _EnableVoxelization;
@@ -84,7 +91,7 @@ struct v2g
 
 struct g2f
 {
-#if defined(RENDER_PASS_FB) || defined(RENDER_PASS_FA)
+#if defined(RENDER_PASS_FB) || defined(RENDER_PASS_FA) || defined(RENDER_PASS_OL_FB)
     float4 vertex : SV_POSITION;
     float2 uv     : TEXCOORD0;
     float3 normal : NORMAL;
@@ -94,6 +101,7 @@ struct g2f
 #endif
 };
 
+#include "func.cginc"
 #include "vert.cginc"
 // #include "hull.cginc"
 #include "geom.cginc"
