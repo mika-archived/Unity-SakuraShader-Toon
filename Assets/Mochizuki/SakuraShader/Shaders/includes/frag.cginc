@@ -7,9 +7,16 @@
 
 #if defined(RENDER_PASS_FB) || defined(RENDER_PASS_FA)
 
-fixed4 fs(const g2f v) : SV_TARGET
+half4 fs(const g2f v) : SV_TARGET
 {
     const fixed4   baseColor        = UNITY_SAMPLE_TEX2D(_MainTex, TRANSFORM_TEX(v.uv, _MainTex)) * _Color;
+    const fixed3   lightColor       = _LightColor0.rgb;
+    const float3   lightDir         = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - v.worldPos, _WorldSpaceLightPos0.w));
+    const fixed3   normal           = normalize(mul(tangentTransform, UnpackNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_BumpMap, _MainTex, TRANSFORM_TEX(v.uv, _BumpMap)))));
+
+    const float  diffuse = pow(saturate(dot(normal, lightDir)) * 0.5 + 0.5, 2);
+
+    half4 finalColor = baseColor * diffuse * fixed4(lightColor, 1.0);
     UNITY_APPLY_FOG(v.fogCoord, finalColor);
 
     return finalColor; 
@@ -17,7 +24,7 @@ fixed4 fs(const g2f v) : SV_TARGET
 
 #elif defined(RENDER_PASS_OL_FB)
 
-fixed4 fs(const g2f v) : SV_TARGET
+half4 fs(const g2f v) : SV_TARGET
 {
     fixed4 baseColor = tex2D(_OutlineTex, TRANSFORM_TEX(v.uv, _OutlineTex)) * _OutlineColor;
 
