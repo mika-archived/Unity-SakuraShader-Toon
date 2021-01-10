@@ -9,8 +9,10 @@
 
 fixed4 fs(const g2f v) : SV_TARGET
 {
-    const fixed4 color = UNITY_SAMPLE_TEX2D(_MainTex, TRANSFORM_TEX(v.uv, _MainTex));
-    return color;
+    const fixed4   baseColor        = UNITY_SAMPLE_TEX2D(_MainTex, TRANSFORM_TEX(v.uv, _MainTex)) * _Color;
+    UNITY_APPLY_FOG(v.fogCoord, finalColor);
+
+    return finalColor; 
 }
 
 #elif defined(RENDER_PASS_OL_FB)

@@ -19,6 +19,9 @@ void gs(triangle const v2g input[3], const uint id : SV_PRIMITIVEID, inout Trian
         o.normal = UnityObjectToWorldNormal(v.normal);
         o.uv     = v.uv;
         o.color  = v.color;
+
+        TRANSFER_SHADOW(o);
+        UNITY_TRANSFER_FOG(o, o.vertex);
 #elif defined(RENDER_PASS_OL_FB)
         if (_EnableOutline)
         {
@@ -35,6 +38,9 @@ void gs(triangle const v2g input[3], const uint id : SV_PRIMITIVEID, inout Trian
             o.uv     = v.uv;
             o.color  = v.color;
         }
+
+        TRANSFER_SHADOW(o);
+        UNITY_TRANSFER_FOG(o, o.vertex);
 #elif defined(RENDER_PASS_SC)
         TRANSFER_SHADOW_CASTER_NORMALOFFSET(o);
 #endif

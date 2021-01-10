@@ -75,6 +75,11 @@ uniform int          _EnableVoxelization;
 // Wireframe
 uniform int          _EnableWireframe;
 
+// Redefine Macros for Shader Streams
+#if defined(SHADOWS_SCREEN) && !defined(UNITY_NO_SCREENSPACE_SHADOWS)
+#undef  TRANSFER_SHADOW
+#define TRANSFER_SHADOW(a) a._ShadowCoord = ComputeScreenPos(a.vertex);
+#endif
 
 struct appdata
 {
@@ -101,6 +106,9 @@ struct g2f
     float2 uv     : TEXCOORD0;
     float3 normal : NORMAL;
     float4 color  : COLOR;
+
+    SHADOW_COORDS(5)
+    UNITY_FOG_COORDS(6)
 #elif defined(RENDER_PASS_SC)
     V2F_SHADOW_CASTER;
 #endif
