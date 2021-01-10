@@ -62,6 +62,7 @@ namespace Mochizuki.SakuraShader
 
             _EnableWireframe = FindProperty(nameof(_EnableWireframe), properties, false);
 
+            _AlphaToMask = FindProperty(nameof(_AlphaToMask), properties, false);
             _Culling = FindProperty(nameof(_Culling), properties, false);
             _ZWrite = FindProperty(nameof(_ZWrite), properties, false);
 
@@ -191,6 +192,8 @@ namespace Mochizuki.SakuraShader
         {
             using (new Section("Advanced Settings"))
             {
+                if (_isCutout)
+                    me.ShaderProperty(_AlphaToMask, "Alpha To Mask");
                 me.ShaderProperty(_Culling, "Culling Mode");
                 me.ShaderProperty(_ZWrite, "ZWrite");
 
@@ -231,6 +234,7 @@ namespace Mochizuki.SakuraShader
 
         private MaterialProperty _Alpha;
         private MaterialProperty _AlphaMask;
+        private MaterialProperty _AlphaToMask;
         private MaterialProperty _BumpMap;
         private MaterialProperty _Color;
         private MaterialProperty _Culling;
