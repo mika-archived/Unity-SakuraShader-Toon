@@ -15,7 +15,8 @@ half4 fs(const g2f v) : SV_TARGET
     const fixed3   binormal         = normalize(v.binormal);
     const float3   lightDir         = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - v.worldPos, _WorldSpaceLightPos0.w));
     const fixed3x3 tangentTransform = transpose(float3x3(tangent, binormal, normalize(v.normal)));
-    const fixed3   normal           = normalize(mul(tangentTransform, UnpackNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_BumpMap, _MainTex, TRANSFORM_TEX(v.uv, _BumpMap)))));
+    const fixed3   normalMap        = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_BumpMap, _MainTex, TRANSFORM_TEX(v.uv, _BumpMap)), _BumpScale);  
+    const fixed3   normal           = normalize(mul(tangentTransform, normalMap));
 
     const float  diffuse = pow(saturate(dot(normal, lightDir)) * 0.5 + 0.5, 2);
 

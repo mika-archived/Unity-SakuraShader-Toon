@@ -18,6 +18,7 @@ Shader "Mochizuki/Sakura Shader/Transparent"
         _AlphaMask                ("Alpha Mask",                             2D) = "white"
         [Normal]
         _BumpMap                  ("Normal Map",                             2D) = "bump" {}
+        _BumpScale                ("Normal Scale",             Range(-2.0, 2.0)) = 1.0
         _OcclusionMap             ("Occlusion Map",                          2D) = "white" {}
 
         // Toon Shading

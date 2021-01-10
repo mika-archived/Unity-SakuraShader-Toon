@@ -23,6 +23,7 @@ uniform int          _UseVertexColor;
 uniform int          _VertexColorBlendMode;
 UNITY_DECLARE_TEX2D_NOSAMPLER(_BumpMap);
 uniform float4       _BumpMap_ST;
+uniform float        _BumpScale;
 UNITY_DECLARE_TEX2D_NOSAMPLER(_OcclusionMap);
 uniform float4       _OcclusionMap_ST;
 

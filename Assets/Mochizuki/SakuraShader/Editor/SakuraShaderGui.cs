@@ -27,6 +27,7 @@ namespace Mochizuki.SakuraShader
             _Cutout = FindProperty(nameof(_Cutout), properties, false);
             _CutoutMask = FindProperty(nameof(_CutoutMask), properties, false);
             _BumpMap = FindProperty(nameof(_BumpMap), properties, false);
+            _BumpScale = FindProperty(nameof(_BumpScale), properties, false);
             _OcclusionMap = FindProperty(nameof(_OcclusionMap), properties, false);
 
             _EnableToon = FindProperty(nameof(_EnableToon), properties, false);
@@ -108,6 +109,7 @@ namespace Mochizuki.SakuraShader
 
                 EditorGUILayout.Space();
 
+                me.ShaderProperty(_BumpScale, "Normal Scale");
                 me.TexturePropertySingleLine(new GUIContent("Normal Map"), _BumpMap);
                 me.TextureScaleOffsetProperty(_BumpMap);
 
@@ -236,6 +238,7 @@ namespace Mochizuki.SakuraShader
         private MaterialProperty _AlphaMask;
         private MaterialProperty _AlphaToMask;
         private MaterialProperty _BumpMap;
+        private MaterialProperty _BumpScale;
         private MaterialProperty _Color;
         private MaterialProperty _Culling;
         private MaterialProperty _Cutout;
