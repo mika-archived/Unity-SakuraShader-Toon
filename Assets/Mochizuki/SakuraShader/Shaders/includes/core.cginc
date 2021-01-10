@@ -23,6 +23,8 @@ uniform int          _UseVertexColor;
 uniform int          _VertexColorBlendMode;
 UNITY_DECLARE_TEX2D_NOSAMPLER(_BumpMap);
 uniform float4       _BumpMap_ST;
+UNITY_DECLARE_TEX2D_NOSAMPLER(_OcclusionMap);
+uniform float4       _OcclusionMap_ST;
 
 // Toon Shading
 uniform int          _EnableToon;
@@ -53,6 +55,9 @@ uniform float4       _RimLightingMask_ST;
 
 // Reflection
 uniform int          _EnableReflection;
+UNITY_DECLARE_TEX2D_NOSAMPLER(_ReflectionMask);
+uniform float4       _ReflectionMask_ST;
+uniform float        _ReflectionSmoothness;
 
 // Outline
 uniform int          _EnableOutline;

@@ -16,6 +16,7 @@ Shader "Mochizuki/Sakura Shader/Opaque"
         _VertexColorBlendMode     ("Vertex Color Blend Mode",               Int) = 1
         [Normal]
         _BumpMap                  ("Normal Map",                             2D) = "bump" {}
+        _OcclusionMap             ("Occlusion Map",                          2D) = "white" {}
 
         // Toon Shading
         [Toggle]
@@ -51,13 +52,15 @@ Shader "Mochizuki/Sakura Shader/Opaque"
         // Reflection
         [Toggle]
         _EnableReflection         ("Enable Reflection",                     Int) = 0
+        _ReflectionMask           ("Reflection Mask",                        2D) = "white" {}
+        _ReflectionSmoothness     ("Reflection Smoothness",     Range(0.0, 1.0)) = 1.0
 
         // Outline
         [Toggle]
         _EnableOutline            ("Enable Outline",                        Int) = 0
         _OutlineMask              ("Outline Mask",                           2D) = "white" {}
         _OutlineColor             ("Outline Color",                       Color) = (0, 0, 0, 1)
-        _OutlineWidth             ("Outline Width",            Range(0.0, 20.0)) = 0.0
+        _OutlineWidth             ("Outline Width",             Range(0.0, 1.0)) = 0.0
         _OutlineTex               ("Outline Texture",                        2D) = "white" {}
         [Toggle]
         _UseMainTexColorInOutline ("Use Main Texture Color",                Int) = 0

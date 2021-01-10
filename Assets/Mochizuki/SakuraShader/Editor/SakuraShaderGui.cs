@@ -27,6 +27,7 @@ namespace Mochizuki.SakuraShader
             _Cutout = FindProperty(nameof(_Cutout), properties, false);
             _CutoutMask = FindProperty(nameof(_CutoutMask), properties, false);
             _BumpMap = FindProperty(nameof(_BumpMap), properties, false);
+            _OcclusionMap = FindProperty(nameof(_OcclusionMap), properties, false);
 
             _EnableToon = FindProperty(nameof(_EnableToon), properties, false);
             _ToonStrength = FindProperty(nameof(_ToonStrength), properties, false);
@@ -54,6 +55,8 @@ namespace Mochizuki.SakuraShader
             _RimLightingMask = FindProperty(nameof(_RimLightingMask), properties, false);
 
             _EnableReflection = FindProperty(nameof(_EnableReflection), properties, false);
+            _ReflectionMask = FindProperty(nameof(_ReflectionMask), properties, false);
+            _ReflectionSmoothness = FindProperty(nameof(_ReflectionSmoothness), properties, false);
 
             _EnableVoxelization = FindProperty(nameof(_EnableVoxelization), properties, false);
 
@@ -107,6 +110,11 @@ namespace Mochizuki.SakuraShader
                 me.TexturePropertySingleLine(new GUIContent("Normal Map"), _BumpMap);
                 me.TextureScaleOffsetProperty(_BumpMap);
 
+                EditorGUILayout.Space();
+
+                me.TexturePropertySingleLine(new GUIContent("Occlusion Map"), _OcclusionMap);
+                me.TextureScaleOffsetProperty(_OcclusionMap);
+
                 using (new EditorGUI.IndentLevelScope())
                 {
                     _isFoldOutMainExpand = EditorGUILayout.Foldout(_isFoldOutMainExpand, "Advanced Settings");
@@ -159,7 +167,21 @@ namespace Mochizuki.SakuraShader
 
         private void OnRimLightingSection(MaterialEditor me) { }
 
-        private void OnReflectionSection(MaterialEditor me) { }
+        private void OnReflectionSection(MaterialEditor me)
+        {
+            using (new Section("Reflection"))
+            {
+                me.ShaderProperty(_EnableReflection, "Enable Reflection");
+
+                if (IsTrue(_EnableReflection))
+                {
+                    me.TexturePropertySingleLine(new GUIContent("Reflection Mask"), _ReflectionMask);
+                    me.TextureScaleOffsetProperty(_ReflectionMask);
+
+                    me.ShaderProperty(_ReflectionSmoothness, "Reflection Smoothness");
+                }
+            }
+        }
 
         private void OnVoxelizationSection(MaterialEditor me) { }
 
@@ -226,12 +248,15 @@ namespace Mochizuki.SakuraShader
         private MaterialProperty _EnableVoxelization;
         private MaterialProperty _EnableWireframe;
         private MaterialProperty _MainTex;
+        private MaterialProperty _OcclusionMap;
         private MaterialProperty _OutlineColor;
         private MaterialProperty _OutlineTex;
         private MaterialProperty _OutlineMask;
         private MaterialProperty _OutlineWidth;
         private MaterialProperty _ParallaxEmissionMask;
         private MaterialProperty _ParallaxEmissionTex;
+        private MaterialProperty _ReflectionMask;
+        private MaterialProperty _ReflectionSmoothness;
         private MaterialProperty _RimLightingColor;
         private MaterialProperty _RimLightingMask;
         private MaterialProperty _ToonStrength;
