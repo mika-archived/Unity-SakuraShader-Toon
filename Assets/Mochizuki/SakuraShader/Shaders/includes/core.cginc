@@ -102,10 +102,13 @@ struct v2g
 struct g2f
 {
 #if defined(RENDER_PASS_FB) || defined(RENDER_PASS_FA) || defined(RENDER_PASS_OL_FB)
-    float4 vertex : SV_POSITION;
-    float2 uv     : TEXCOORD0;
-    float3 normal : NORMAL;
-    float4 color  : COLOR;
+    float4 vertex   : SV_POSITION;
+    float2 uv       : TEXCOORD0;
+    float4 worldPos : TEXCOORD1;
+    float3 binormal : TEXCOORD2;
+    float3 normal   : NORMAL;
+    float4 color    : COLOR;
+    float3 tangent  : TANGENT;
 
     SHADOW_COORDS(5)
     UNITY_FOG_COORDS(6)
