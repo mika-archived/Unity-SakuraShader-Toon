@@ -19,6 +19,8 @@ Shader "Mochizuki/Sakura Shader/Transparent"
         [Normal]
         _BumpMap                  ("Normal Map",                             2D) = "bump" {}
         _BumpScale                ("Normal Scale",             Range(-2.0, 2.0)) = 1.0
+        _ParallaxMap              ("Height Map",                             2D) = "bump" {}
+        _ParallaxScale            ("Height Scale",             Range(-2.0, 2.0)) = 1.0
         _OcclusionMap             ("Occlusion Map",                          2D) = "white" {}
 
         // Toon Shading

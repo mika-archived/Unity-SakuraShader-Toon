@@ -12,7 +12,7 @@
 // Main Shading
 UNITY_DECLARE_TEX2D(_MainTex);
 uniform float4       _MainTex_ST;
-uniform fixed4       _Color;
+uniform float4       _Color;
 uniform float        _Alpha;
 UNITY_DECLARE_TEX2D_NOSAMPLER(_AlphaMask);
 uniform float4       _AlphaMask_ST;
@@ -24,6 +24,9 @@ uniform int          _VertexColorBlendMode;
 UNITY_DECLARE_TEX2D_NOSAMPLER(_BumpMap);
 uniform float4       _BumpMap_ST;
 uniform float        _BumpScale;
+UNITY_DECLARE_TEX2D_NOSAMPLER(_ParallaxMap);
+uniform float4       _ParallaxMap_ST;
+uniform float        _ParallaxScale;
 UNITY_DECLARE_TEX2D_NOSAMPLER(_OcclusionMap);
 uniform float4       _OcclusionMap_ST;
 

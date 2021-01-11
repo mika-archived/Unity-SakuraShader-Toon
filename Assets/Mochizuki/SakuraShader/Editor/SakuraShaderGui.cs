@@ -22,6 +22,8 @@ namespace Mochizuki.SakuraShader
             _CutoutMask = FindProperty(nameof(_CutoutMask), properties, false);
             _BumpMap = FindProperty(nameof(_BumpMap), properties, false);
             _BumpScale = FindProperty(nameof(_BumpScale), properties, false);
+            _ParallaxMap = FindProperty(nameof(_ParallaxMap), properties, false);
+            _ParallaxScale = FindProperty(nameof(_ParallaxScale), properties, false);
             _OcclusionMap = FindProperty(nameof(_OcclusionMap), properties, false);
 
             _EnableToon = FindProperty(nameof(_EnableToon), properties, false);
@@ -102,6 +104,11 @@ namespace Mochizuki.SakuraShader
 
                 TextureFoldout("Normal Map", me, _BumpMap, ref _isFoldoutBumpMapExpand);
                 me.ShaderProperty(_BumpScale, "Normal Scale");
+
+                EditorGUILayout.Space();
+
+                TextureFoldout("Height Map", me, _ParallaxMap, ref _isFoldoutParallaxMapExpand);
+                me.ShaderProperty(_ParallaxScale, "Height Scale");
 
                 EditorGUILayout.Space();
 
@@ -256,6 +263,7 @@ namespace Mochizuki.SakuraShader
         private bool _isFoldoutOutlineTexExpand;
         private bool _isFoldoutParallaxEmissionMaskExpand;
         private bool _isFoldoutParallaxEmissionTextureExpand;
+        private bool _isFoldoutParallaxMapExpand;
         private bool _isFoldoutReflectionMaskExpand;
         private bool _isFoldoutRimLightingMaskExpand;
         private bool _isTransparent;
@@ -292,6 +300,8 @@ namespace Mochizuki.SakuraShader
         private MaterialProperty _OutlineWidth;
         private MaterialProperty _ParallaxEmissionMask;
         private MaterialProperty _ParallaxEmissionTex;
+        private MaterialProperty _ParallaxMap;
+        private MaterialProperty _ParallaxScale;
         private MaterialProperty _ReflectionMask;
         private MaterialProperty _ReflectionSmoothness;
         private MaterialProperty _RimLightingColor;

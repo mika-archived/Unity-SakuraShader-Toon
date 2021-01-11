@@ -7,20 +7,31 @@
 
 #if defined(RENDER_PASS_FB) || defined(RENDER_PASS_FA)
 
-half4 fs(const g2f v) : SV_TARGET
+float4 fs(const g2f v) : SV_TARGET
 {
-    const fixed4   baseColor        = UNITY_SAMPLE_TEX2D(_MainTex, TRANSFORM_TEX(v.uv, _MainTex)) * _Color;
-    const fixed3   lightColor       = _LightColor0.rgb;
-    const fixed3   tangent          = normalize(v.tangent);
-    const fixed3   binormal         = normalize(v.binormal);
+    const float4   baseColor        = UNITY_SAMPLE_TEX2D(_MainTex, TRANSFORM_TEX(v.uv, _MainTex)) * _Color;
+    const float3   lightColor       = _LightColor0.rgb;
+    const float3   tangent          = normalize(v.tangent);
+    const float3   binormal         = normalize(v.binormal);
+    const float3   viewDir          = normalize(_WorldSpaceCameraPos - v.worldPos);
     const float3   lightDir         = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - v.worldPos, _WorldSpaceLightPos0.w));
-    const fixed3x3 tangentTransform = transpose(float3x3(tangent, binormal, normalize(v.normal)));
-    const fixed3   normalMap        = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_BumpMap, _MainTex, TRANSFORM_TEX(v.uv, _BumpMap)), _BumpScale);  
-    const fixed3   normal           = normalize(mul(tangentTransform, normalMap));
+    const float3   floatDir         = normalize(viewDir + lightDir);
+    const float3x3 worldToTangent   = float3x3(tangent, binormal, normalize(v.normal));
+    const float3x3 tangentToWorld = transpose(worldToTangent);
+    const float3   heightMap        = UNITY_SAMPLE_TEX2D_SAMPLER(_ParallaxMap, _MainTex, TRANSFORM_TEX(v.uv, _ParallaxMap));
+    const float2   uv               = v.uv + ParallaxOffset(heightMap, _ParallaxScale, mul(worldToTangent, viewDir));
+    const float3   normalMap        = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_BumpMap, _MainTex, TRANSFORM_TEX(uv, _BumpMap)), _BumpScale);  
+    const float3   normal           = normalize(mul(tangentToWorld, normalMap));
+
+#if defined(SHADOWS_SCREEN)
+    const float  attenuation = 1.0;
+#else
+    UNITY_LIGHT_ATTENUATION(attenuation, v, v.worldPos.xyz);
+#endif
 
     const float  diffuse = pow(saturate(dot(normal, lightDir)) * 0.5 + 0.5, 2);
 
-    half4 finalColor = baseColor * diffuse * fixed4(lightColor, 1.0);
+    float4 finalColor = baseColor * diffuse * float4(lightColor, 1.0);
     UNITY_APPLY_FOG(v.fogCoord, finalColor);
 
     return finalColor; 
@@ -28,9 +39,9 @@ half4 fs(const g2f v) : SV_TARGET
 
 #elif defined(RENDER_PASS_OL_FB)
 
-half4 fs(const g2f v) : SV_TARGET
+float4 fs(const g2f v) : SV_TARGET
 {
-    fixed4 baseColor = tex2D(_OutlineTex, TRANSFORM_TEX(v.uv, _OutlineTex)) * _OutlineColor;
+    float4 baseColor = tex2D(_OutlineTex, TRANSFORM_TEX(v.uv, _OutlineTex)) * _OutlineColor;
 
     if (_UseMainTexColorInOutline)
     {
@@ -45,7 +56,7 @@ half4 fs(const g2f v) : SV_TARGET
 
 #elif defined(RENDER_PASS_SC)
 
-fixed4 fs(const g2f v) : SV_TARGET
+float4 fs(const g2f v) : SV_TARGET
 {
     SHADOW_CASTER_FRAGMENT(v)
 }
