@@ -33,12 +33,21 @@ float4 fs(const g2f v) : SV_TARGET
     const float3 ambient      = ShadeSH9(half4(normal, 1));
     const float4 ambientColor = float4(ambient + v.vertexLight, 1) * baseColor;
 #else
-    const float4 ambientColor = float4(0, 0, 0, 1);
-#endif
+    const float4 ambientColor = float4(0.0, 0.0, 0.0, 1.0);
+#endif // RENDER_PASS_FB
     const float  diffuse      = pow(saturate(dot(normal, lightDir)) * 0.5 + 0.5, 2);
     const float4 diffuseColor = diffuse * baseColor * fixed4(lightColor, 1.0) * attenuation;
 
-    float4 finalColor = ambientColor + diffuseColor;
+    float4 emissionColor = float4(0.0, 0.0, 0.0, 1.0);
+#if defined(RENDER_PASS_FB)
+    if (_EnableEmission)
+    {
+        emissionColor += float4(_EmissionColor.rgb * _EmissionIntensity, 1.0);
+        emissionColor *= UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMask, _MainTex, TRANSFORM_TEX(uv, _EmissionMask));
+    }
+#endif // RENDER_PASS_FB
+
+    float4 finalColor = ambientColor + diffuseColor + emissionColor;
     UNITY_APPLY_FOG(v.fogCoord, finalColor);
 
     return finalColor; 

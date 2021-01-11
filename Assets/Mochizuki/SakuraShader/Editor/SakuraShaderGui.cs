@@ -33,8 +33,9 @@ namespace Mochizuki.SakuraShader
             _Unlighting = FindProperty(nameof(_Unlighting), properties, false);
 
             _EnableEmission = FindProperty(nameof(_EnableEmission), properties, false);
-            _EmissionColor = FindProperty(nameof(_EmissionColor), properties, false);
             _EmissionMask = FindProperty(nameof(_EmissionMask), properties, false);
+            _EmissionColor = FindProperty(nameof(_EmissionColor), properties, false);
+            _EmissionIntensity = FindProperty(nameof(_EmissionIntensity), properties, false);
 
             _EnableParallaxEmission = FindProperty(nameof(_EnableParallaxEmission), properties, false);
             _ParallaxEmissionTex = FindProperty(nameof(_ParallaxEmissionTex), properties, false);
@@ -130,7 +131,21 @@ namespace Mochizuki.SakuraShader
 
         private void OnShadingSection(MaterialEditor me) { }
 
-        private void OnEmissionSection(MaterialEditor me) { }
+        private void OnEmissionSection(MaterialEditor me)
+        {
+            using (new Section("Emission"))
+            {
+                me.ShaderProperty(_EnableEmission, "Enable Emission");
+
+                if (IsTrue(_EnableEmission))
+                {
+                    TextureFoldout("Emission Mask", me, _EmissionMask, ref _isFoldoutEmissionMaskExpand);
+
+                    me.ShaderProperty(_EmissionColor, "Emission Color");
+                    me.ShaderProperty(_EmissionIntensity, "Emission Intensity");
+                }
+            }
+        }
 
         private void OnParallaxEmissionSection(MaterialEditor me) { }
 
@@ -282,6 +297,7 @@ namespace Mochizuki.SakuraShader
         private MaterialProperty _Cutout;
         private MaterialProperty _CutoutMask;
         private MaterialProperty _EmissionColor;
+        private MaterialProperty _EmissionIntensity;
         private MaterialProperty _EmissionMask;
         private MaterialProperty _EnableCustomLightings;
         private MaterialProperty _EnableEmission;

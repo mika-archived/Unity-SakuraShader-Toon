@@ -40,9 +40,10 @@ uniform float        _Unlighting;
 
 // Emission
 uniform int          _EnableEmission;
-uniform float4       _EmissionColor;
 UNITY_DECLARE_TEX2D_NOSAMPLER(_EmissionMask);
 uniform float4       _EmissionMask_ST;
+uniform float4       _EmissionColor;
+uniform float        _EmissionIntensity;
 
 // Parallax Emission
 uniform int          _EnableParallaxEmission;

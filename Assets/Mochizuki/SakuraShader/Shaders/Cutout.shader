@@ -39,7 +39,7 @@ Shader "Mochizuki/Sakura Shader/Cutout"
         _EmissionMask             ("Emission Mask",                          2D) = "white" {}
         [HDR]
         _EmissionColor            ("Emission Color",                      Color) = (0, 0, 0, 1)
-
+        _EmissionIntensity        ("Emission Intensity",        Range(0.0, 2.0)) = 1.0
 
         // Parallax Emission
         [Toggle]
