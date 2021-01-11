@@ -31,23 +31,30 @@ float4 fs(const g2f v) : SV_TARGET
 
 #if defined(RENDER_PASS_FB)
     const float3 ambient      = ShadeSH9(half4(normal, 1));
-    const float4 ambientColor = float4(ambient + v.vertexLight, 1) * baseColor;
+    const float3 ambientColor = float3(ambient + v.vertexLight) * baseColor.rgb;
 #else
-    const float4 ambientColor = float4(0.0, 0.0, 0.0, 1.0);
+    const float3 ambientColor = float3(0.0, 0.0, 0.0);
 #endif // RENDER_PASS_FB
     const float  diffuse      = pow(saturate(dot(normal, lightDir)) * 0.5 + 0.5, 2);
-    const float4 diffuseColor = diffuse * baseColor * fixed4(lightColor, 1.0) * attenuation;
+    const float3 diffuseColor = diffuse * baseColor.rgb * lightColor * attenuation;
 
-    float4 emissionColor = float4(0.0, 0.0, 0.0, 1.0);
+    float3 emissionColor = float3(0.0, 0.0, 0.0);
 #if defined(RENDER_PASS_FB)
     if (_EnableEmission)
     {
-        emissionColor += float4(_EmissionColor.rgb * _EmissionIntensity, 1.0);
-        emissionColor *= UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMask, _MainTex, TRANSFORM_TEX(uv, _EmissionMask));
+        emissionColor += _EmissionColor.rgb * _EmissionIntensity;
+        emissionColor *= UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMask, _MainTex, TRANSFORM_TEX(uv, _EmissionMask)).rgb;
     }
 #endif // RENDER_PASS_FB
 
-    float4 finalColor = ambientColor + diffuseColor + emissionColor;
+#if defined(SHADER_VARIANT_TRANSPARENT)
+    const float alphaMask = 1 - toMonochrome(UNITY_SAMPLE_TEX2D_SAMPLER(_AlphaMask, _MainTex, TRANSFORM_TEX(uv, _AlphaMask)));
+    const float alpha     = lerp(1.0, baseColor.a * alphaMask, _Alpha);
+    float4 finalColor = float4(ambientColor + diffuseColor + emissionColor, alpha);
+#else
+    float4 finalColor = float4(ambientColor + diffuseColor + emissionColor, 1.0);
+#endif // SHADER_VARIANT_TRANSPARENT
+
     UNITY_APPLY_FOG(v.fogCoord, finalColor);
 
     return finalColor; 
