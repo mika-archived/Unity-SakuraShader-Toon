@@ -192,7 +192,7 @@ namespace Mochizuki.SakuraShader
                 me.ShaderProperty(_Culling, "Culling Mode");
                 me.ShaderProperty(_ZWrite, "ZWrite");
 
-                me.EnableInstancingField();
+                // me.EnableInstancingField();
                 me.RenderQueueField();
             }
         }
