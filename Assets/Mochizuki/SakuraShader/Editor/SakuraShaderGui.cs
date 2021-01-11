@@ -8,12 +8,6 @@ namespace Mochizuki.SakuraShader
 {
     public class SakuraShaderGui : ShaderGUI
     {
-        private bool _isCutout;
-        private bool _isFoldOutAdvancedExpand;
-        private bool _isFoldOutMainExpand;
-        private bool _isFoldOutOutlineExpand;
-        private bool _isTransparent;
-
         public override void OnGUI(MaterialEditor me, MaterialProperty[] properties)
         {
             var material = (Material) me.target;
@@ -86,37 +80,32 @@ namespace Mochizuki.SakuraShader
         {
             using (new Section("Main"))
             {
-                me.TexturePropertySingleLine(new GUIContent("Main Texture"), _MainTex, _Color);
-                me.TextureScaleOffsetProperty(_MainTex);
+                TextureFoldout("Main Texture", me, _MainTex, ref _isFoldOutMainTextureExpand);
 
                 if (_isTransparent)
                 {
                     EditorGUILayout.Space();
 
+                    TextureFoldout("Alpha Mask", me, _AlphaMask, ref _isFoldoutAlphaMaskExpand);
                     me.ShaderProperty(_Alpha, "Alpha Transparent");
-                    me.TexturePropertySingleLine(new GUIContent("Alpha Mask"), _AlphaMask);
-                    me.TextureScaleOffsetProperty(_AlphaMask);
                 }
 
                 if (_isCutout)
                 {
                     EditorGUILayout.Space();
 
+                    TextureFoldout("Cutout Mask", me, _CutoutMask, ref _isFoldoutCutoutMaskExpand);
                     me.ShaderProperty(_Cutout, "Cutout Threshold");
-                    me.TexturePropertySingleLine(new GUIContent("Cutout Mask"), _CutoutMask);
-                    me.TextureScaleOffsetProperty(_CutoutMask);
                 }
 
                 EditorGUILayout.Space();
 
+                TextureFoldout("Normal Map", me, _BumpMap, ref _isFoldoutBumpMapExpand);
                 me.ShaderProperty(_BumpScale, "Normal Scale");
-                me.TexturePropertySingleLine(new GUIContent("Normal Map"), _BumpMap);
-                me.TextureScaleOffsetProperty(_BumpMap);
 
                 EditorGUILayout.Space();
 
-                me.TexturePropertySingleLine(new GUIContent("Occlusion Map"), _OcclusionMap);
-                me.TextureScaleOffsetProperty(_OcclusionMap);
+                TextureFoldout("Occlusion Map", me, _OcclusionMap, ref _isFoldoutOcclusionMapExpand);
 
                 using (new EditorGUI.IndentLevelScope())
                 {
@@ -146,8 +135,7 @@ namespace Mochizuki.SakuraShader
 
                 if (IsTrue(_EnableOutline))
                 {
-                    me.TexturePropertySingleLine(new GUIContent("Outline Mask"), _OutlineMask);
-                    me.TextureScaleOffsetProperty(_OutlineMask);
+                    TextureFoldout("Outline Mask", me, _OutlineMask, ref _isFoldoutOutlineMaskExpand);
 
                     me.ShaderProperty(_OutlineColor, "Outline Color");
                     me.ShaderProperty(_OutlineWidth, "Outline Width");
@@ -158,8 +146,7 @@ namespace Mochizuki.SakuraShader
 
                         if (_isFoldOutOutlineExpand)
                         {
-                            me.TexturePropertySingleLine(new GUIContent("Outline Texture"), _OutlineTex);
-                            me.TextureScaleOffsetProperty(_OutlineTex);
+                            TextureFoldout("Outline Texture", me, _OutlineTex, ref _isFoldoutOutlineTexExpand);
 
                             me.ShaderProperty(_UseMainTexColorInOutline, "Use Main Texture Color");
                         }
@@ -178,8 +165,7 @@ namespace Mochizuki.SakuraShader
 
                 if (IsTrue(_EnableReflection))
                 {
-                    me.TexturePropertySingleLine(new GUIContent("Reflection Mask"), _ReflectionMask);
-                    me.TextureScaleOffsetProperty(_ReflectionMask);
+                    TextureFoldout("Reflection Mask", me, _ReflectionMask, ref _isFoldoutReflectionMaskExpand);
 
                     me.ShaderProperty(_ReflectionSmoothness, "Reflection Smoothness");
                 }
@@ -214,6 +200,28 @@ namespace Mochizuki.SakuraShader
             return property.floatValue > 0.5;
         }
 
+        private void TextureFoldout(string label, MaterialEditor me, MaterialProperty property, ref bool display)
+        {
+            var rect = GUILayoutUtility.GetRect(16.0f, 22.0f, GUIStyle.none);
+            var e = Event.current;
+
+            me.TexturePropertyMiniThumbnail(new Rect(rect.x + 18.0f, rect.y + 2.0f, rect.width - 20.0f, rect.height), property, label, "");
+
+            var toggle = new Rect(rect.x + 2.0f + EditorGUI.indentLevel * 16.0f, rect.y + 3.0f, 16.0f, 16.0f);
+            if (e.type == EventType.Repaint)
+                EditorStyles.foldout.Draw(toggle, false, false, display, false);
+
+            if (e.type == EventType.MouseDown && rect.Contains(e.mousePosition))
+            {
+                display = !display;
+                e.Use();
+            }
+
+            if (display)
+                using (new EditorGUI.IndentLevelScope())
+                    me.TextureScaleOffsetProperty(property);
+        }
+
         private class Section : IDisposable
         {
             private readonly IDisposable _disposable;
@@ -231,6 +239,28 @@ namespace Mochizuki.SakuraShader
                 EditorGUILayout.Space();
             }
         }
+
+        // ReSharper disable InconsistentNaming
+
+        private bool _isCutout;
+        private bool _isFoldOutAdvancedExpand;
+        private bool _isFoldoutAlphaMaskExpand;
+        private bool _isFoldoutBumpMapExpand;
+        private bool _isFoldoutCutoutMaskExpand;
+        private bool _isFoldoutEmissionMaskExpand;
+        private bool _isFoldOutMainExpand;
+        private bool _isFoldOutMainTextureExpand;
+        private bool _isFoldoutOcclusionMapExpand;
+        private bool _isFoldOutOutlineExpand;
+        private bool _isFoldoutOutlineMaskExpand;
+        private bool _isFoldoutOutlineTexExpand;
+        private bool _isFoldoutParallaxEmissionMaskExpand;
+        private bool _isFoldoutParallaxEmissionTextureExpand;
+        private bool _isFoldoutReflectionMaskExpand;
+        private bool _isFoldoutRimLightingMaskExpand;
+        private bool _isTransparent;
+
+        // ReSharper restore InconsistentNaming
 
         #region Material Properties
 
