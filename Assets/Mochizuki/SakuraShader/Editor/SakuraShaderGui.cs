@@ -84,6 +84,7 @@ namespace Mochizuki.SakuraShader
             using (new Section("Main"))
             {
                 TextureFoldout("Main Texture", me, _MainTex, ref _isFoldOutMainTextureExpand);
+                me.ShaderProperty(_Color, "Main Color");
 
                 if (_isTransparent)
                 {
