@@ -110,7 +110,7 @@ Shader "Mochizuki/Sakura Shader/Cutout"
         #pragma geometry gs
         #pragma fragment fs
 
-        #define SHADER_VARIANT_OPAQUE
+        #define SHADER_VARIANT_CUTOUT
 
         ENDCG
 
