@@ -25,6 +25,10 @@ float4 fs(const g2f v) : SV_TARGET
 
 #if defined(SHADOWS_SCREEN)
     const float  attenuation = 1.0;
+#if defined(SHADER_VARIANT_CUTOUT)
+    clip(baseColor.a - _Cutout);
+#endif
+
 #else
     UNITY_LIGHT_ATTENUATION(attenuation, v, v.worldPos.xyz);
 #endif
