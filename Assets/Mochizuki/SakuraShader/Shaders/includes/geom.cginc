@@ -15,6 +15,8 @@ void gs(triangle const v2g input[3], const uint id : SV_PRIMITIVEID, inout Trian
 
         g2f o;
 #if defined(RENDER_PASS_FB) || defined(RENDER_PASS_FA)
+        UNITY_INITIALIZE_OUTPUT(g2f, o);
+
         o.vertex   = UnityObjectToClipPos(v.vertex);
         o.worldPos = mul(unity_ObjectToWorld, v.vertex);
         o.normal   = UnityObjectToWorldNormal(v.normal);
@@ -23,9 +25,11 @@ void gs(triangle const v2g input[3], const uint id : SV_PRIMITIVEID, inout Trian
         o.tangent  = v.tangent;
         o.binormal = UnityObjectToWorldDir(cross(v.normal, v.tangent) * v.tangent.w);
 
-        TRANSFER_SHADOW(o);
+        UNITY_TRANSFER_LIGHTING(o, o.uv);
         UNITY_TRANSFER_FOG(o, o.vertex);
-#elif defined(RENDER_PASS_OL_FB)
+#elif defined(RENDER_PASS_OL_FB) || defined(RENDER_PASS_OL_FA)
+        UNITY_INITIALIZE_OUTPUT(g2f, o);
+
         if (_EnableOutline)
         {
             o.normal   = UnityObjectToWorldNormal(v.normal);
@@ -44,7 +48,7 @@ void gs(triangle const v2g input[3], const uint id : SV_PRIMITIVEID, inout Trian
         o.tangent  = v.tangent;
         o.binormal = UnityObjectToWorldDir(cross(v.normal, v.tangent) * v.tangent.w);
 
-        TRANSFER_SHADOW(o);
+        UNITY_TRANSFER_LIGHTING(o, o.uv);
         UNITY_TRANSFER_FOG(o, o.vertex);
 #elif defined(RENDER_PASS_SC)
         TRANSFER_SHADOW_CASTER_NORMALOFFSET(o);

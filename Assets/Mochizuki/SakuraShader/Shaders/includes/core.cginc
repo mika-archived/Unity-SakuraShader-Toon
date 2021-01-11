@@ -114,8 +114,8 @@ struct g2f
     float4 color    : COLOR;
     float3 tangent  : TANGENT;
 
-    SHADOW_COORDS(3)
-    UNITY_FOG_COORDS(4)
+    UNITY_LIGHTING_COORDS(3, 4)
+    UNITY_FOG_COORDS(5)
 #elif defined(RENDER_PASS_SC)
     V2F_SHADOW_CASTER;
 #endif

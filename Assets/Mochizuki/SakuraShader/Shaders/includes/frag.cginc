@@ -27,11 +27,7 @@ float4 fs(const g2f v) : SV_TARGET
     clip(baseColor.a - _Cutout);
 #endif
 
-#if !defined(SHADOWS_SCREEN)
-    float attenuation = 1.0;
-#else
     UNITY_LIGHT_ATTENUATION(attenuation, v, v.worldPos.xyz);
-#endif
 
     const float  diffuse      = pow(saturate(dot(normal, lightDir)) * 0.5 + 0.5, 2);
     const float4 diffuseColor = diffuse * baseColor * fixed4(lightColor, 1.0) * attenuation;
