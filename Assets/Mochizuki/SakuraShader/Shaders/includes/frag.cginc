@@ -29,10 +29,16 @@ float4 fs(const g2f v) : SV_TARGET
 
     UNITY_LIGHT_ATTENUATION(attenuation, v, v.worldPos.xyz);
 
+#if defined(RENDER_PASS_FB)
+    const float3 ambient      = ShadeSH9(half4(normal, 1));
+    const float4 ambientColor = float4(ambient + v.vertexLight, 1) * baseColor;
+#else
+    const float4 ambientColor = float4(0, 0, 0, 1);
+#endif
     const float  diffuse      = pow(saturate(dot(normal, lightDir)) * 0.5 + 0.5, 2);
     const float4 diffuseColor = diffuse * baseColor * fixed4(lightColor, 1.0) * attenuation;
 
-    float4 finalColor = diffuseColor;
+    float4 finalColor = ambientColor + diffuseColor;
     UNITY_APPLY_FOG(v.fogCoord, finalColor);
 
     return finalColor; 
