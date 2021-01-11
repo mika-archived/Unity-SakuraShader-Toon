@@ -23,19 +23,20 @@ float4 fs(const g2f v) : SV_TARGET
     const float3   normalMap        = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_BumpMap, _MainTex, TRANSFORM_TEX(uv, _BumpMap)), _BumpScale);  
     const float3   normal           = normalize(mul(tangentToWorld, normalMap));
 
-#if defined(SHADOWS_SCREEN)
-    const float  attenuation = 1.0;
 #if defined(SHADER_VARIANT_CUTOUT)
     clip(baseColor.a - _Cutout);
 #endif
 
+#if !defined(SHADOWS_SCREEN)
+    float attenuation = 1.0;
 #else
     UNITY_LIGHT_ATTENUATION(attenuation, v, v.worldPos.xyz);
 #endif
 
-    const float  diffuse = pow(saturate(dot(normal, lightDir)) * 0.5 + 0.5, 2);
+    const float  diffuse      = pow(saturate(dot(normal, lightDir)) * 0.5 + 0.5, 2);
+    const float4 diffuseColor = diffuse * baseColor * fixed4(lightColor, 1.0) * attenuation;
 
-    float4 finalColor = baseColor * diffuse * float4(lightColor, 1.0);
+    float4 finalColor = diffuseColor;
     UNITY_APPLY_FOG(v.fogCoord, finalColor);
 
     return finalColor; 

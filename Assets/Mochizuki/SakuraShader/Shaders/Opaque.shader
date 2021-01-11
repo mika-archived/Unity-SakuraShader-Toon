@@ -125,7 +125,7 @@ Shader "Mochizuki/Sakura Shader/Opaque"
 
             CGPROGRAM
 
-            #pragma multi_compile_fwdbase
+            #pragma multi_compile_fwdbase_fullshadows
             #pragma multi_compile_fog
 
             #define RENDER_PASS_FB
